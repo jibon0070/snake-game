@@ -4,13 +4,52 @@
     <meta charset="UTF-8">
     <title>Snake Game</title>
     <style>
-        #game-screen{
+        *, *:before, *:after {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        #game-screen {
             border: 1px solid black;
+        }
+
+        #overlay {
+            position: relative;
+        }
+
+        #overlay div {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 2em;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #score {
+            display: block!important;
+            background: none!important;
+        }
+
+        #game-screen {
+            display: block;
         }
     </style>
 </head>
 <body>
-<canvas id="game-screen" width="800" height="600"></canvas>
-<script src="js/index.js"></script>
+<div id="overlay">
+    <div id="game_over">Game Over <br>Press space to play</div>
+    <div id="paused">Game Paused <br>Press space to play</div>
+    <canvas id="game-screen"></canvas>
+    <div id="score">Score: <span id="score-value">0</span></div>
+</div>
+<script src="js/index.js" type="module"></script>
 </body>
 </html>
