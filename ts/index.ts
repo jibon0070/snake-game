@@ -1,11 +1,9 @@
 import {Game} from "./Game.js";
 
-const canvas = document.querySelector('#game-screen');
-const ctx = canvas.getContext('2d');
-const game = new Game(ctx, canvas);
+const game = new Game();
 let lastTime = 0;
 
-function gameLoop(time) {
+function gameLoop(time: number) {
     //delta time
     const deltaTime = time - lastTime;
     lastTime = time;

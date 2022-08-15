@@ -1,5 +1,7 @@
+import {Game} from "./Game.js";
+
 export class Input {
-    constructor(game) {
+    constructor(game: Game) {
         addEventListener('keydown', (event) => {
             switch (event.key) {
                 case 'ArrowUp':

@@ -1,28 +1,35 @@
 import {Vector2} from "./Vector2.js";
+import {Game} from "./Game.js";
+import {Entity} from "./Entity.js";
 
-export class Snake {
+export class Snake implements Entity{
     position = new Vector2(4, 0);
+    velocity: Vector2 = new Vector2(1, 0);
+    readonly width: number;
+    readonly height: number;
+    readonly color: string;
+    readonly ctx: CanvasRenderingContext2D;
+    readonly tick: number;
 
-    constructor(width, height, color, ctx, tick = 1000) {
-        this.velocity = new Vector2(1, 0);
-        this.width = width;
-        this.height = height;
-        this.color = color;
-        this.ctx = ctx;
-        this.tick = tick;
+    constructor(game: Game) {
+        this.width = game.gridSize;
+        this.height = game.gridSize;
+        this.color = 'green';
+        this.ctx = game.ctx;
+        this.tick = game.game_tick;
     }
 
-    directions = []
+    directions: Vector2[] = []
     lastUpdate = 0;
 
-    bodys = [
+    bodys: Vector2[] = [
         new Vector2(4, 0),
         new Vector2(3, 0),
         new Vector2(2, 0),
         new Vector2(1, 0)
     ];
 
-    draw() {
+    draw(): void {
         for (let i = 0; i < this.bodys.length; i++) {
             if (i !== 0) {
                 this.ctx.fillStyle = this.color;
@@ -37,7 +44,7 @@ export class Snake {
         }
     }
 
-    move(direction) {
+    move(direction: 'up' | 'down' | 'left' | 'right') {
         switch (direction) {
             case 'up':
                 //up
@@ -58,15 +65,18 @@ export class Snake {
         }
     }
 
-    update(deltaTime) {
+    // update(deltaTime: number): void {
+    // }
+
+    update(deltaTime: number) {
         this.lastUpdate += deltaTime;
         if (this.lastUpdate < this.tick) return;
         this.lastUpdate = 0;
 
         if (this.directions.length) {
             if ((this.velocity.x !== 0 && this.directions[0].x === 0) || (this.velocity.y !== 0 && this.directions[0].y === 0)) {
-                this.velocity = this.directions.shift();
-            }else {
+                this.velocity = this.directions.shift()!;
+            } else {
                 this.directions.shift();
             }
         }
