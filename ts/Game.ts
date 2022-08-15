@@ -3,34 +3,38 @@ import {Food} from "./Food.js";
 import {Input} from "./Input.js";
 
 export class Game {
-    readonly game_tick = 250;
+    readonly game_tick = 200; //getters and setters
     state = 'paused';
     private score = 0;
     private canvas: HTMLCanvasElement;
     readonly ctx: CanvasRenderingContext2D;
-    readonly gridSize: number;
+    gridSize!: number;
     private game_over_screen: HTMLDivElement;
     private paused_screen: HTMLDivElement;
     private score_screen: HTMLSpanElement;
     snake!: Snake;
     private food!: Food;
     private entities!: (Snake | Food)[];
+    private overlay: HTMLDivElement;
+    rows: number = 20;
 
     constructor() {
         this.canvas = document.querySelector<HTMLCanvasElement>('#game-screen')!;
-        this.canvas.width = window.innerWidth - 5;
-        this.canvas.height = window.innerHeight - 5;
+
         this.ctx = this.canvas.getContext('2d')!;
-        this.gridSize = Math.floor(this.canvas.width / 40);
         this.game_over_screen = document.querySelector<HTMLDivElement>('#game_over')!;
         this.paused_screen = document.querySelector<HTMLDivElement>('#paused')!;
         this.score_screen = document.querySelector<HTMLSpanElement>('#score-value')!;
+        this.overlay = document.querySelector<HTMLDivElement>('#overlay')!;
+        this.resize_canvas();
+        window.addEventListener('resize', this.resize_canvas.bind(this));
         this.init();
     }
 
     update(deltaTime: number) {
         this.score_screen.innerHTML = this.score.toString();
         this.draw();
+        // show  overlay screens
         if (this.state === 'paused') {
             this.game_over_screen.style.display = 'none';
             this.paused_screen.style.display = 'flex';
@@ -58,6 +62,7 @@ export class Game {
         for (let entity of this.entities) {
             entity.update(deltaTime);
         }
+        // console.log(this.snake.position, this.food.position);
     }
 
     draw() {
@@ -70,6 +75,7 @@ export class Game {
     }
 
     init() {
+        this.score = 0;
         this.snake = new Snake(this);
         this.food = new Food(this);
         this.entities = [this.snake, this.food];
@@ -84,5 +90,17 @@ export class Game {
 
     update_score() {
         this.score++;
+    }
+
+    private resize_canvas() {
+        const innerWidth = window.innerWidth;
+        const innerHeight = window.innerHeight;
+        const canvasWidth = innerWidth > innerHeight ? innerHeight : innerWidth;
+        const canvasHeight = canvasWidth;
+        this.canvas.width = canvasWidth;
+        this.canvas.height = canvasHeight;
+        this.overlay.style.width = canvasWidth + 'px';
+        this.gridSize = Math.floor(this.canvas.width / this.rows);
+        this.init();
     }
 }

@@ -11,7 +11,7 @@ export class Snake implements Entity{
     readonly ctx: CanvasRenderingContext2D;
     readonly tick: number;
 
-    constructor(game: Game) {
+    constructor(private game: Game) {
         this.width = game.gridSize;
         this.height = game.gridSize;
         this.color = 'green';
@@ -36,11 +36,16 @@ export class Snake implements Entity{
             } else {
                 this.ctx.fillStyle = 'white';
             }
-            this.ctx.fillRect(this.bodys[i].x * this.width, this.bodys[i].y * this.width, this.width, this.height);
+            // this.ctx.fillRect(this.bodys[i].x * this.width, this.bodys[i].y * this.width, this.width, this.height);
+            //circle
+            this.ctx.beginPath();
+            this.ctx.arc(this.bodys[i].x * this.width + this.width / 2, this.bodys[i].y * this.height + this.height / 2, this.width / 2, 0, 2 * Math.PI);
+            this.ctx.fill();
+
             //5px solid gray border
-            this.ctx.strokeStyle = 'gray';
+            this.ctx.strokeStyle = 'black';
             this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(this.bodys[i].x * this.width, this.bodys[i].y * this.width, this.width, this.height);
+            this.ctx.stroke();
         }
     }
 
@@ -92,12 +97,12 @@ export class Snake implements Entity{
         this.bodys[0] = this.position;
 
         if (this.position.x < 0) {
-            this.position.x = this.ctx.canvas.width / this.width - 1;
-        } else if (this.position.x > this.ctx.canvas.width / this.width - 1) {
+            this.position.x = this.game.rows;
+        } else if (this.position.x > this.game.rows) {
             this.position.x = 0;
         } else if (this.position.y < 0) {
-            this.position.y = this.ctx.canvas.height / this.height - 1;
-        } else if (this.position.y > this.ctx.canvas.height / this.height - 1) {
+            this.position.y = this.game.rows;
+        } else if (this.position.y > this.game.rows) {
             this.position.y = 0;
         }
     }

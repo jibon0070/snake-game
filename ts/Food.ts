@@ -8,8 +8,9 @@ export class Food implements Entity {
     }
 
     go_to_random_position() {
-        this.position.x =  Math.floor(Math.random() * this.game.ctx.canvas.width / this.width);
-        this.position.y =  Math.floor(Math.random() * this.game.ctx.canvas.height / this.height);
+        this.position.x =  Math.floor(Math.random() * this.game.rows);
+        this.position.y =  Math.floor(Math.random() * this.game.rows);
+        console.log(this.position);
         for (let body of this.game.snake.bodys) {
             if (body.x === this.position.x && body.y === this.position.y) {
                 this.go_to_random_position();
