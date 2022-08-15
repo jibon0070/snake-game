@@ -1,25 +1,13 @@
 {
   "name": "snake-game",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "repository": "https://github.com/jibon0070/snake-game.git",
+  "author": "A.R. Jibon",
+  "license": "MIT",
   "scripts": {
-    "tsc-watch": "tsc -w",
-    "tsc-build": "tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jibon0070/snake-game.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jibon0070/snake-game/issues"
-  },
-  "homepage": "https://github.com/jibon0070/snake-game#readme",
-  "devDependencies": {
-    "live-server": "^1.2.2",
-    "typescript": "^4.7.4"
+    "watch-tsc": "tsc -w",
+    "build": "tsc",
+    "start": "live-server"
   }
 }
