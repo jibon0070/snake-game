@@ -5,11 +5,10 @@ export interface Entity {
     velocity: Vector2;
     width: number;
     height: number;
-    color: string;
-    lastUpdate: number;
 
 
     draw(): void;
 
     update(deltaTime: number): void;
+
 }

@@ -8,6 +8,7 @@ function gameLoop(time: number) {
     const deltaTime = time - lastTime;
     lastTime = time;
     game.update(deltaTime);
+    game.draw();
     requestAnimationFrame(gameLoop);
 }
 

@@ -1,51 +1,35 @@
-import {Snake} from "./Snake.js";
-import {Food} from "./Food.js";
-import {Input} from "./Input.js";
+import { Snake } from "./Snake.js";
+import { Food } from "./Food.js";
+import { Input } from "./Input.js";
+import UI from "./UI.js";
+import { Entity } from "./Entity.js";
+import Score from "./Score.js";
 
 export class Game {
-    readonly game_tick = 200; //getters and setters
+    game_tick = 200; //getters and setters
     state = 'paused';
-    private score = 0;
     private canvas: HTMLCanvasElement;
     readonly ctx: CanvasRenderingContext2D;
     gridSize!: number;
-    private game_over_screen: HTMLDivElement;
-    private paused_screen: HTMLDivElement;
-    private score_screen: HTMLSpanElement;
     snake!: Snake;
     private food!: Food;
-    private entities!: (Snake | Food)[];
-    private overlay: HTMLDivElement;
+    private entities!: Entity[];
     rows: number = 20;
+    ui!: UI;
+    input!: Input;
+    score!: Score;
 
     constructor() {
         this.canvas = document.querySelector<HTMLCanvasElement>('#game-screen')!;
 
         this.ctx = this.canvas.getContext('2d')!;
-        this.game_over_screen = document.querySelector<HTMLDivElement>('#game_over')!;
-        this.paused_screen = document.querySelector<HTMLDivElement>('#paused')!;
-        this.score_screen = document.querySelector<HTMLSpanElement>('#score-value')!;
-        this.overlay = document.querySelector<HTMLDivElement>('#overlay')!;
         this.resize_canvas();
         window.addEventListener('resize', this.resize_canvas.bind(this));
         this.init();
     }
 
     update(deltaTime: number) {
-        this.score_screen.innerHTML = this.score.toString();
-        this.draw();
-        // show  overlay screens
-        if (this.state === 'paused') {
-            this.game_over_screen.style.display = 'none';
-            this.paused_screen.style.display = 'flex';
-        } else if (this.state === 'game over') {
-            this.paused_screen.style.display = 'none';
-            this.game_over_screen.style.display = 'flex';
-        } else {
-            this.paused_screen.style.display = 'none';
-            this.game_over_screen.style.display = 'none';
-        }
-
+        this.menu_input();
         if (this.state !== 'playing') return;
 
         if (this.snake.position.x === this.food.position.x && this.snake.position.y === this.food.position.y) {
@@ -62,7 +46,19 @@ export class Game {
         for (let entity of this.entities) {
             entity.update(deltaTime);
         }
-        // console.log(this.snake.position, this.food.position);
+    }
+    menu_input() {
+        if (this.input.keys.has(' ')) {
+            this.input.keys.delete(' ');
+            if (this.state == 'playing') {
+                this.state = 'paused';
+            } else if(this.state == 'paused') {
+                this.state = 'playing';
+            } else{
+                this.state = 'playing';
+                this.init();
+            }
+        }
     }
 
     draw() {
@@ -75,32 +71,34 @@ export class Game {
     }
 
     init() {
-        this.score = 0;
         this.snake = new Snake(this);
         this.food = new Food(this);
-        this.entities = [this.snake, this.food];
-        new Input(this);
+        this.score = new Score();
+        this.ui = new UI(this);
+        this.entities = [this.snake, this.food, this.ui];
+        this.input = new Input(this);
     }
 
     eat() {
         this.snake.bodys.push(this.snake.bodys[this.snake.bodys.length - 1].clone());
         this.food.go_to_random_position();
+        this.game_tick--;
         this.update_score();
     }
 
     update_score() {
-        this.score++;
+        this.score.add(1);
     }
 
     private resize_canvas() {
-        const innerWidth = window.innerWidth;
-        const innerHeight = window.innerHeight;
-        const canvasWidth = innerWidth > innerHeight ? innerHeight : innerWidth;
-        const canvasHeight = canvasWidth;
-        this.canvas.width = canvasWidth;
-        this.canvas.height = canvasHeight;
-        this.overlay.style.width = canvasWidth + 'px';
-        this.gridSize = Math.floor(this.canvas.width / this.rows);
+        const sr = innerWidth / innerHeight;
+
+        if (1 < sr)
+            this.gridSize = Math.floor(innerHeight / this.rows);
+        else
+            this.gridSize = Math.floor(innerWidth / this.rows);
+        this.canvas.width = this.gridSize * this.rows;
+        this.canvas.height = this.gridSize * this.rows;
         this.init();
     }
 }
