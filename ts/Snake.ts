@@ -42,6 +42,21 @@ export class Snake implements Entity {
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(this.bodys[i].x * this.width, this.bodys[i].y * this.width, this.width, this.height);
         }
+        //draw line
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 10;
+        this.ctx.beginPath();
+        this.ctx.moveTo((this.bodys[0].x + .5) * this.width, (this.bodys[0].y + .5) * this.width);
+        for (let i = 1; i < this.bodys.length; i++) {
+            if (Math.abs(this.bodys[i].x - this.bodys[i - 1].x) > 1 || Math.abs(this.bodys[i].y - this.bodys[i - 1].y) > 1) {
+                this.ctx.stroke();
+                this.ctx.beginPath();
+                this.ctx.moveTo((this.bodys[i].x + .5) * this.width, (this.bodys[i].y + .5) * this.width);
+            } else {
+                this.ctx.lineTo((this.bodys[i].x + .5) * this.width, (this.bodys[i].y + .5) * this.width);
+            }
+        }
+        this.ctx.stroke();
     }
 
     update(deltaTime: number) {
