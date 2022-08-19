@@ -7,30 +7,40 @@ export default class UI implements Entity {
     velocity!: Vector2;
     width!: number;
     height!: number;
-    touch_screen: boolean = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    private readonly touch_screen: boolean = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    show_hint = true;
+    private game_started: number = 0;
     draw(): void {
         this.draw_score();
-
-        this.draw_state();
-        //pause icon
         this.draw_pause_button(10, 10, 'Pause');
 
+        this.draw_hint()
 
-
+        this.draw_state();
     }
-    draw_pause_button(x: number, y: number, text: string) {
-        if(this.game.state === 'playing' && this.touch_screen){
-        this.game.ctx.fillStyle = 'white';
-        this.game.ctx.fillRect(x, y, text.length * 16, 16 + 16);
-        this.game.ctx.fillStyle = 'black';
-        //align: center
-        this.game.ctx.textAlign = 'center';
-        //fz16
-        this.game.ctx.font = '16px Arial';
-        this.game.ctx.fillText(text, (x + text.length * 16) / 2, y + 8);
+    private draw_hint() {
+
+        if (this.show_hint && 2000 < this.game_started) {
+            this.game.ctx.fillStyle = 'white';
+            this.game.ctx.font = '16px Arial';
+            this.game.ctx.textAlign = 'center';
+            this.game.ctx.textBaseline = 'bottom';
+            this.game.ctx.fillText(!this.touch_screen?'Use arrow keys to move the snake': 'Swipe to move the snake', this.game.ctx.canvas.width / 2, this.game.ctx.canvas.height - 10);
         }
     }
-    draw_state() {
+    private draw_pause_button(x: number, y: number, text: string) {
+        if (this.game.state === 'playing' && this.touch_screen) {
+            this.game.ctx.fillStyle = 'white';
+            this.game.ctx.fillRect(x, y, text.length * 16, 16 + 16);
+            this.game.ctx.fillStyle = 'black';
+            //align: center
+            this.game.ctx.textAlign = 'center';
+            //fz16
+            this.game.ctx.font = '16px Arial';
+            this.game.ctx.fillText(text, (x + text.length * 16) / 2, y + 8);
+        }
+    }
+    private draw_state() {
         if (this.game.state !== 'playing') {
             this.game.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             this.game.ctx.fillRect(0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
@@ -47,7 +57,7 @@ export default class UI implements Entity {
             }
         }
     }
-    draw_score() {
+    private draw_score() {
         //color white
         this.game.ctx.fillStyle = 'white';
         //fz16
@@ -60,6 +70,7 @@ export default class UI implements Entity {
         this.game.ctx.fillText(`High Score: ${this.game.score.high_score}`, this.game.ctx.canvas.width - 10, 32);
     }
     update(deltaTime: number): void {
+        this.game_started += deltaTime;
     }
 
     constructor(private readonly game: Game) { }

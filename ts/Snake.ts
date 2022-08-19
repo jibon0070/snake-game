@@ -81,6 +81,11 @@ export class Snake implements Entity {
             this.move();
             return;
         }
+        if (this.game.ui.show_hint) {
+            setTimeout(() => {
+                this.game.ui.show_hint = false;
+            }, 2000);
+        }
         this.velocity = this.movement_queue[0];
         this.movement_queue.splice(0, 1);
     }
